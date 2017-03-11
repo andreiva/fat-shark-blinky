@@ -5,9 +5,9 @@
 #define MODE_FIRST          1
 #define MODE_LIGHT          1
 #define MODE_BLINK          2
-#define MODE_LANDING        3
+#define MODE_PULSE          3
 #define MODE_KNIGHT_RIDER   4
-#define MODE_LAST           MODE_KNIGHT_RIDER
+#define MODE_LAST           MODE_PULSE
 
 #define PIN_UP       1
 #define PIN_DOWN     3
@@ -64,6 +64,8 @@ LED lastColor;
 bool change = true;
 static uint8_t c = 0;
 static uint8_t modeCounter = 0;
+static float rad = 0;
+float amplitude = 0.1;
 
 void setup() {
 
@@ -135,27 +137,6 @@ void keyLoop() {
     key.fmiddle = false;
   }
 
-  //  if (key.left > 10) {
-  //
-  //    if (key.fleft == false) {
-  //      key.fleft = true;
-  //    }
-  //  }
-  //  else {
-  //    key.fleft = false;
-  //  }
-  //
-  //  if (key.right > 10) {
-  //
-  //    if (key.fright == false) {
-  //      key.fright = true;
-  //
-  //    }
-  //  }
-  //  else {
-  //    key.fright = false;
-  //  }
-
 }
 
 void nextPower() {
@@ -166,28 +147,34 @@ void nextPower() {
   switch (line.level) {
     case 0:
       line.power = 0;
+      amplitude = 0;
       strip.clear();
       strip.show();
       break;
 
     case 1:
       line.power = 0.1;
+      amplitude = 0.05;
       setColorAll(lastColor.r * 0.1, lastColor.g * 0.1, lastColor.b * 0.1);
       break;
 
     case 2:
       line.power = 0.3;
+      amplitude = 0.125;
       setColorAll(lastColor.r * 0.3, lastColor.g * 0.3, lastColor.b * 0.3);
       break;
 
     case 3:
       line.power = 1;
+      amplitude = 0.5;
       setColorAll(lastColor);
       break;
   }
 }
 
 void setPower(float p) {
+  
+  p = max(min(p, 1), 0);
   line.level = p;
   setColorAll(lastColor.r * p, lastColor.g * p, lastColor.b * p);
 
@@ -196,7 +183,7 @@ void setPower(float p) {
 void nextMode() {
 
   line.mode++;
-  if (line.mode > /*MODE_LAST*/ MODE_BLINK) {
+  if (line.mode > MODE_LAST) {
     line.mode = MODE_FIRST;
   }
   modeCounter = 0;
@@ -278,10 +265,11 @@ void mainLoop() {
         }
         break;
 
-      case MODE_LANDING:
-        setColorAll(GREEN);
+      case MODE_PULSE:
+        rad += 0.02;
+        setPower(line.power + amplitude * sin(rad));
+        //setColorAll(lastColor);
 
-        change = false;
         break;
 
       case MODE_KNIGHT_RIDER:
@@ -306,30 +294,9 @@ void setColorAll(uint8_t r, uint8_t g, uint8_t b) {
 
 void setColorAll(LED led) {
 
-  float p = 0;
-
-  switch (line.level) {
-    case 0:
-      strip.clear();
-      strip.show();
-      return;
-
-    case 1:
-      p = 0.1;
-      break;
-
-    case 2:
-      p = 0.3;
-      break;
-
-    case 3:
-      p = 1;
-      break;
-  }
-
   for (uint8_t i = 0; i < 7; i++) {
     line.led[i] = led;
-    strip.setPixelColor(i, led.r * p, led.g * p, led.b * p);
+    strip.setPixelColor(i, led.r * line.power, led.g * line.power, led.b * line.power);
   }
   strip.show();
 }
