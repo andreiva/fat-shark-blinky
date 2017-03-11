@@ -7,7 +7,7 @@
 #define MODE_BLINK          2
 #define MODE_PULSE          3
 #define MODE_KNIGHT_RIDER   4
-#define MODE_LAST           MODE_PULSE
+#define MODE_LAST           MODE_KNIGHT_RIDER
 
 #define PIN_UP       1
 #define PIN_DOWN     3
@@ -15,6 +15,16 @@
 #define PIN_RIGHT    5
 #define PIN_MIDDLE   2
 #define PIN_LED      0
+
+#define BLACK (struct LED){0, 0, 0}
+#define WHITE (struct LED){255, 255, 255}
+#define RED (struct LED){255, 0, 0}
+#define GREEN (struct LED){0, 255, 0}
+#define BLUE (struct LED){0, 0, 255}
+#define PINK (struct LED){255, 100, 100}
+#define PURPLE (struct LED){255, 50, 255}
+#define YELLOW (struct LED){255, 200, 0}
+#define AQUA (struct LED){20, 255, 200}
 
 
 struct KEY {
@@ -36,19 +46,6 @@ struct LED {
   byte b;
 };
 
-
-#define BLACK (struct LED){0, 0, 0}
-#define WHITE (struct LED){255, 255, 255}
-#define RED (struct LED){255, 0, 0}
-#define GREEN (struct LED){0, 255, 0}
-#define BLUE (struct LED){0, 0, 255}
-#define PINK (struct LED){255, 100, 100}
-#define PURPLE (struct LED){255, 50, 255}
-#define YELLOW (struct LED){255, 200, 0}
-#define AQUA (struct LED){20, 255, 200}
-
-
-
 struct LINE {
   LED led[7];
   byte level = 3;
@@ -61,10 +58,11 @@ Timer timer;
 KEY key;
 LINE line;
 LED lastColor;
+
 bool change = true;
-static uint8_t c = 0;
-static uint8_t modeCounter = 0;
-static float rad = 0;
+uint8_t c = 0;
+uint16_t modeCounter = 0;
+float rad = 0;
 float amplitude = 0.1;
 
 void setup() {
@@ -72,8 +70,6 @@ void setup() {
   pinMode(PIN_LED, OUTPUT);
   pinMode(PIN_UP, INPUT_PULLUP);
   pinMode(PIN_DOWN, INPUT_PULLUP);
-  //  pinMode(PIN_LEFT, INPUT_PULLUP);
-  //  pinMode(PIN_RIGHT, INPUT_PULLUP);
   pinMode(PIN_MIDDLE, INPUT_PULLUP);
 
   strip.begin();
@@ -154,13 +150,13 @@ void nextPower() {
 
     case 1:
       line.power = 0.1;
-      amplitude = 0.05;
+      amplitude = 0.08;
       setColorAll(lastColor.r * 0.1, lastColor.g * 0.1, lastColor.b * 0.1);
       break;
 
     case 2:
       line.power = 0.3;
-      amplitude = 0.125;
+      amplitude = 0.15;
       setColorAll(lastColor.r * 0.3, lastColor.g * 0.3, lastColor.b * 0.3);
       break;
 
@@ -173,7 +169,7 @@ void nextPower() {
 }
 
 void setPower(float p) {
-  
+
   p = max(min(p, 1), 0);
   line.level = p;
   setColorAll(lastColor.r * p, lastColor.g * p, lastColor.b * p);
@@ -268,17 +264,40 @@ void mainLoop() {
       case MODE_PULSE:
         rad += 0.02;
         setPower(line.power + amplitude * sin(rad));
-        //setColorAll(lastColor);
-
         break;
 
       case MODE_KNIGHT_RIDER:
-        setColorAll(YELLOW);
-
-        change = false;
+        kitLight(modeCounter);
         break;
     }
 
+  }
+}
+
+void kitLight(uint16_t counter) {
+
+  uint8_t thing = counter / 10;
+  if (thing > 20) {
+    modeCounter = 0;
+    thing = 0;
+  }
+
+  strip.clear();
+  setKit(thing);
+  strip.show();
+
+}
+
+void setKit(int8_t start) {
+  //strip.setPixelColor(start - 2, lastColor.r * 0.05, lastColor.g * 0.05, lastColor.b * 0.05);
+  strip.setPixelColor(start - 1, lastColor.r * 0.1, lastColor.g * 0.1, lastColor.b * 0.1);
+  strip.setPixelColor(start, lastColor.r * 0.3, lastColor.g * 0.3, lastColor.b * 0.3);
+
+  if (start > 9) {
+    start = 10 + (10 - start);
+ //   strip.setPixelColor(start + 2, lastColor.r * 0.05, lastColor.g * 0.05, lastColor.b * 0.05);
+    strip.setPixelColor(start + 1, lastColor.r * 0.1, lastColor.g * 0.1, lastColor.b * 0.1);
+    strip.setPixelColor(start, lastColor.r * 0.3, lastColor.g * 0.3, lastColor.b * 0.3);
   }
 }
 
