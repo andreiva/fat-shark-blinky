@@ -277,7 +277,7 @@ void mainLoop() {
 void kitLight(uint16_t counter) {
 
   uint8_t thing = counter / 10;
-  if (thing > 20) {
+  if (thing > 30) {
     modeCounter = 0;
     thing = 0;
   }
@@ -294,7 +294,7 @@ void setKit(int8_t start) {
   strip.setPixelColor(start, lastColor.r * 0.3, lastColor.g * 0.3, lastColor.b * 0.3);
 
   if (start > 9) {
-    start = 10 + (10 - start);
+    start = 10 + (5 - start);
  //   strip.setPixelColor(start + 2, lastColor.r * 0.05, lastColor.g * 0.05, lastColor.b * 0.05);
     strip.setPixelColor(start + 1, lastColor.r * 0.1, lastColor.g * 0.1, lastColor.b * 0.1);
     strip.setPixelColor(start, lastColor.r * 0.3, lastColor.g * 0.3, lastColor.b * 0.3);
