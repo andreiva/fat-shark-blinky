@@ -73,8 +73,8 @@ void setup() {
   pinMode(PIN_MIDDLE, INPUT_PULLUP);
 
   strip.begin();
-  setColorAll(AQUA);
-  lastColor = AQUA;
+  setColorAll(BLACK);
+  lastColor = BLACK;
   line.mode = MODE_LIGHT;
 
   timer.every(10, mainLoop);
