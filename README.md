@@ -1,6 +1,9 @@
 Fatshark blinky WS2812 mod
 ==========================
 
+#Youtube video 
+
+
 #Parts
 ATtiny85
 http://www.ebay.com/itm/Digispark-Kickstarter-ATTINY85-Arduino-General-Micro-USB-Development-Board-/351877226756?var=&hash=item51ed846104:m:my8ETikA-fqEa93bidyNkmg
@@ -18,3 +21,4 @@ https://www.youtube.com/watch?v=MmDBvgrYGZs
 
 On Linux you have to add UDEV rules
 https://digistump.com/wiki/digispark/tutorials/linuxtroubleshooting
+
