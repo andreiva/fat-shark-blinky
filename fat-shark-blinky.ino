@@ -26,6 +26,7 @@
 #define YELLOW (struct LED){255, 200, 0}
 #define AQUA (struct LED){20, 255, 200}
 
+#define NUMBER_OF_LEDS      7
 
 struct KEY {
   char up = 0;
@@ -47,13 +48,13 @@ struct LED {
 };
 
 struct LINE {
-  LED led[7];
+  LED led[NUMBER_OF_LEDS];
   byte level = 3;
   float power = 0.2;
   byte mode = MODE_LIGHT;
 };
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(7, PIN_LED, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMBER_OF_LEDS, PIN_LED, NEO_GRB + NEO_KHZ800);
 Timer timer;
 KEY key;
 LINE line;
@@ -302,7 +303,7 @@ void setKit(int8_t start) {
 }
 
 void setColorAll(uint8_t r, uint8_t g, uint8_t b) {
-  for (uint8_t i = 0; i < 7; i++) {
+  for (uint8_t i = 0; i < NUMBER_OF_LEDS; i++) {
     line.led[i].r = r;
     line.led[i].g = b;
     line.led[i].b = b;
@@ -312,8 +313,7 @@ void setColorAll(uint8_t r, uint8_t g, uint8_t b) {
 }
 
 void setColorAll(LED led) {
-
-  for (uint8_t i = 0; i < 7; i++) {
+  for (uint8_t i = 0; i < NUMBER_OF_LEDS; i++) {
     line.led[i] = led;
     strip.setPixelColor(i, led.r * line.power, led.g * line.power, led.b * line.power);
   }
