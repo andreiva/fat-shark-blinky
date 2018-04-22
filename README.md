@@ -22,3 +22,7 @@ https://www.youtube.com/watch?v=MmDBvgrYGZs
 ## On Linux you have to add UDEV rules
 https://digistump.com/wiki/digispark/tutorials/linuxtroubleshooting
 
+## Timer.h Arduino library
+To install Timer library, download the ZIP file here: https://github.com/JChristensen/Timer
+
+How to install libraries https://www.youtube.com/watch?v=Alz-rX6lkEw
